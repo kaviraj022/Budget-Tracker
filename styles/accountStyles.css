@@ -1,28 +1,50 @@
 /* Container specific to the account page */
 .container {
-  max-width: 800px;
+  max-width: 400px;
   margin: 100px auto 60px;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-}
-
-h1 {
-  text-align: center;
-}
-
-form {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center content inside container */
 }
 
-input[type="text"], input[type="number"] {
-  margin-bottom: 10px;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
+body {
+  background-color: #f4f4f4;
+}
+
+/* Title styling */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Account List Section */
+#account-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f1f1f1;
+  padding: 10px;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Account Actions (Add and Delete buttons) */
+.account-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 button {
@@ -32,8 +54,126 @@ button {
   border: none;
   border-radius: 8px;
   font-size: 16px;
+  cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
 button:hover {
   background-color: #0056b3;
+}
+
+/* Add and Delete Account Form Section */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the form content */
+}
+
+input[type="text"], input[type="number"] {
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%; /* Full width */
+}
+
+form div {
+  display: flex;
+  justify-content: space-between;
+}
+
+form button {
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+form button[type="button"] {
+  background-color: #dc3545;
+}
+
+/* Add and Cancel buttons (spacing between them) */
+form div {
+  display: flex;
+  gap: 10px; /* Add some space between buttons */
+}
+
+form button:hover {
+  background-color: #218838;
+}
+
+form button[type="button"]:hover {
+  background-color: #c82333;
+}
+
+/* Set the same width for both forms */
+#add-account-form-container, #delete-accounts-section {
+  max-width: 400px; /* Limit the max width to the same size as the container */
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+/* Delete Account Form Section */
+#account-list-to-delete {
+  margin-top: 10px;
+}
+
+.account-to-delete {
+  margin-bottom: 10px;
+}
+
+#account-list-to-delete input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Mobile view (Below 600px) */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px; /* Reduce padding for smaller screens */
+    margin: 60px auto 40px; /* Adjust margins for smaller screens */
+    max-width: 100%; /* Allow container to take full width */
+  }
+
+  h1 {
+    font-size: 24px; /* Slightly smaller font size */
+    margin-bottom: 10px;
+  }
+
+  #account-list {
+    margin-bottom: 15px;
+  }
+
+  .account-item {
+    padding: 8px; /* Reduce padding for smaller items */
+  }
+
+  .account-actions {
+    flex-direction: column; /* Stack the action buttons vertically on small screens */
+    gap: 10px; /* Add space between buttons */
+  }
+
+  button {
+    font-size: 14px; /* Reduce font size for mobile */
+    padding: 10px;
+  }
+
+  form input[type="text"], form input[type="number"] {
+    font-size: 14px; /* Slightly smaller font for input fields */
+  }
+
+  form button {
+    font-size: 14px; /* Adjust button size for mobile */
+    padding: 8px 14px;
+  }
+
+  #add-account-form-container, #delete-accounts-section {
+    max-width: 100%; /* Allow forms to use full width of the container */
+    padding: 15px;
+  }
 }

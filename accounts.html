@@ -18,14 +18,42 @@
 
   <div class="container">
     <h1>Accounts</h1>
-    <form id="add-account-form">
-      <input type="text" id="account-name" placeholder="Account Name" required>
-      <input type="number" id="account-amount" placeholder="Account Amount" required>
-      <button type="submit">Add Account</button>
-    </form>
+    
+    <!-- Account List Displayed Above -->
     <div id="account-list">
       <!-- Accounts will be displayed here -->
     </div>
+
+    <!-- Buttons below the Account List -->
+    <div class="account-actions">
+      <button id="add-account-btn">Add Account</button>
+      <button id="delete-account-btn">Delete Account</button>
+    </div>
+
+    <!-- Add Account Form Section -->
+    <div id="add-account-form-container" style="display:none;">
+      <form id="add-account-form">
+        <input type="text" id="account-name" placeholder="Account Name" required>
+        <input type="number" id="account-amount" placeholder="Account Amount" required>
+        <div>
+          <button type="submit" id="confirm-add-btn">Confirm</button>
+          <button type="button" id="cancel-add-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Delete Account Section (Initially Hidden) -->
+    <div id="delete-accounts-section" style="display:none;">
+      <h2>Delete Accounts</h2>
+      <div id="account-list-to-delete">
+        <!-- Accounts with checkboxes for deletion will be displayed here -->
+      </div>
+      <div>
+        <button id="delete-selected-btn">Delete Selected</button>
+        <button type="button" id="cancel-delete-btn">Cancel</button>
+      </div>
+    </div>
+    
   </div>
 
   <footer>
@@ -38,6 +66,36 @@
       window.location.href = "signin.html"; // Redirect to signin if not logged in
     }
 
+    // Function to hide both forms
+    function hideForms() {
+      document.getElementById("add-account-form-container").style.display = "none";
+      document.getElementById("delete-accounts-section").style.display = "none";
+    }
+
+    // Show the Add Account Form when the button is clicked
+    document.getElementById("add-account-btn").addEventListener("click", function () {
+      hideForms(); // Hide both forms first
+      document.getElementById("add-account-form-container").style.display = "block";
+    });
+
+    // Show the Delete Account Section when the button is clicked
+    document.getElementById("delete-account-btn").addEventListener("click", function () {
+      hideForms(); // Hide both forms first
+      document.getElementById("delete-accounts-section").style.display = "block";
+      displayAccountsForDeletion(); // Display accounts to select for deletion
+    });
+
+    // Hide the Add Account Form when Cancel is clicked
+    document.getElementById("cancel-add-btn").addEventListener("click", function () {
+      document.getElementById("add-account-form-container").style.display = "none";
+    });
+
+    // Hide the Delete Account Section when Cancel is clicked
+    document.getElementById("cancel-delete-btn").addEventListener("click", function () {
+      document.getElementById("delete-accounts-section").style.display = "none";
+    });
+
+    // Handle the Add Account Form submission
     document.getElementById("add-account-form").addEventListener("submit", function (event) {
       event.preventDefault();
 
@@ -54,22 +112,67 @@
       accountList.push(newAccount);
       localStorage.setItem("accounts", JSON.stringify(accountList)); // Store updated accounts list in localStorage
 
-      displayAccounts();
+      displayAccounts(); // Re-render accounts list
+      document.getElementById("add-account-form-container").style.display = "none"; // Close form after submission
     });
 
+    // Display all accounts in the account list section
     function displayAccounts() {
       const accountList = JSON.parse(localStorage.getItem("accounts") || "[]");
       const accountListContainer = document.getElementById("account-list");
 
-      accountListContainer.innerHTML = "";
-      accountList.forEach(account => {
+      accountListContainer.innerHTML = ""; // Clear current list
+
+      accountList.forEach((account, index) => {
         const accountDiv = document.createElement("div");
         accountDiv.classList.add("account-item");
-        accountDiv.innerHTML = `<strong>${account.name}</strong>: $${account.amount}`;
+        accountDiv.innerHTML = `
+          <div>
+            <strong>${account.name}</strong>: $${account.amount}
+          </div>
+        `;
         accountListContainer.appendChild(accountDiv);
       });
     }
 
+    // Display accounts with checkboxes for deletion
+    function displayAccountsForDeletion() {
+      const accountList = JSON.parse(localStorage.getItem("accounts") || "[]");
+      const accountListToDelete = document.getElementById("account-list-to-delete");
+
+      accountListToDelete.innerHTML = ""; // Clear the current list
+
+      accountList.forEach((account, index) => {
+        const accountDiv = document.createElement("div");
+        accountDiv.classList.add("account-to-delete");
+
+        accountDiv.innerHTML = `
+          <input type="checkbox" id="delete-checkbox-${index}" data-index="${index}">
+          <label for="delete-checkbox-${index}">${account.name}</label>
+        `;
+        accountListToDelete.appendChild(accountDiv);
+      });
+    }
+
+    // Handle Delete Selected Accounts
+    document.getElementById("delete-selected-btn").addEventListener("click", function () {
+      const accountList = JSON.parse(localStorage.getItem("accounts") || "[]");
+      const selectedIndices = [];
+
+      // Find all checked checkboxes
+      document.querySelectorAll("#account-list-to-delete input[type='checkbox']:checked").forEach(checkbox => {
+        selectedIndices.push(parseInt(checkbox.getAttribute("data-index")));
+      });
+
+      // Delete selected accounts
+      const updatedAccountList = accountList.filter((account, index) => !selectedIndices.includes(index));
+      localStorage.setItem("accounts", JSON.stringify(updatedAccountList));
+
+      displayAccounts(); // Re-render the account list after deletion
+      document.getElementById("delete-accounts-section").style.display = "none"; // Hide delete section after action
+    });
+
+    // Initial call to display accounts
     displayAccounts();
   </script>
 </body>
