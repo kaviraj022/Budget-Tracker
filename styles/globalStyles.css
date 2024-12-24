@@ -11,6 +11,7 @@ html, body {
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.3rem;
   line-height: 1.6;
   background-color: #f4f4f4;
   display: flex;
@@ -68,11 +69,10 @@ footer {
 .container {
   max-width: 800px;
   margin: 100px auto 120px;  /* Increased bottom margin to avoid overlap with footer */
-  padding: 20px;
+  padding: 50px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  position: relative;  /* Ensure content positioning is relative */
 }
 
 h1 {
