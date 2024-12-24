@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expenses</title>
+  <link rel="stylesheet" href="styles/globalStyles.css">
+  <link rel="stylesheet" href="styles/expenseStyles.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="expenses.html" class="active">Expenses</a>
+      <a href="accounts.html">Accounts</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Expenses</h1>
+    <div class="expense-list">
+      <!-- Expenses will be listed here -->
+    </div>
+    <button class="add-expense">+</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 MyExpenseTracker. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Check if user is logged in
+    if (!localStorage.getItem("loggedIn")) {
+      window.location.href = "signin.html"; // Redirect to signin if not logged in
+    }
+  </script>
+</body>
+</html>

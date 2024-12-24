@@ -1,0 +1,74 @@
+/* Global Header styles */
+header {
+  width: 100%;
+  background-color: #333;
+  color: white;
+  padding: 10px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.navbar a:hover {
+  background-color: #444;
+}
+
+.navbar a.active {
+  background-color: #007BFF;
+}
+
+/* Global Footer styles */
+footer {
+  width: 100%;
+  text-align: center;
+  background-color: #333;
+  color: white;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+/* Container for the content */
+.container {
+  max-width: 800px;
+  margin: 100px auto 60px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+h1 {
+  text-align: center;
+}
+
+/* Logout Button */
+.logout-btn {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #ff1a1a;
+}

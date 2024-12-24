@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In</title>
+  <link rel="stylesheet" href="styles/loginStyles/signinStyles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sign In</h1>
+    <form id="signin-form">
+      <input type="email" id="signin-email" placeholder="Enter your email" required>
+      <input type="password" id="signin-password" placeholder="Enter your password" required>
+      <button type="submit">Sign In</button>
+    </form>
+    <p><a href="signup.html">Don't have an account? Sign up</a></p>
+    <p><a href="forgotPassword.html">Forgot Password?</a></p>
+  </div>
+
+  <script src="globalScript.js"></script>
+  <script>
+    document.getElementById("signin-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      // Get the email and password entered by the user
+      const email = document.getElementById("signin-email").value;
+      const password = document.getElementById("signin-password").value;
+
+      // Assuming a simple local storage check for credentials
+      const storedEmail = localStorage.getItem("userEmail");
+      const storedPassword = localStorage.getItem("userPassword");
+
+      if (email === storedEmail && password === storedPassword) {
+        // If credentials are correct, set logged in status and redirect to accounts page
+        localStorage.setItem("loggedIn", "true");
+        window.location.href = "accounts.html"; // Redirect to accounts page after successful login
+      } else {
+        alert("Incorrect email or password.");
+      }
+    });
+  </script>
+</body>
+</html>

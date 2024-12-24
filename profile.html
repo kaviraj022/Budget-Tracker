@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link rel="stylesheet" href="styles/globalStyles.css">
+  <link rel="stylesheet" href="styles/profileStyles.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="expenses.html">Expenses</a>
+      <a href="accounts.html">Accounts</a>
+      <a href="profile.html" class="active">Profile</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>User Profile</h1>
+    <p>Welcome, <strong id="user-name">User</strong></p>
+    <p>Email: <span id="user-email">example@example.com</span></p>
+    <p>Date of Birth: <span id="user-dob">01/01/2000</span></p>
+    <button class="logout-btn" id="logout">Logout</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 MyExpenseTracker. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Check if user is logged in
+    if (!localStorage.getItem("loggedIn")) {
+      window.location.href = "signin.html"; // Redirect to signin if not logged in
+    }
+
+    document.getElementById("logout").addEventListener("click", function () {
+      localStorage.removeItem("loggedIn"); // Log out user
+      window.location.href = "signin.html"; // Redirect to signin page after logout
+    });
+  </script>
+</body>
+</html>

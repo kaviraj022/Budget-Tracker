@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accounts</title>
+  <link rel="stylesheet" href="styles/globalStyles.css">
+  <link rel="stylesheet" href="styles/accountStyles.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="expenses.html">Expenses</a>
+      <a href="accounts.html" class="active">Accounts</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Accounts</h1>
+    <form id="add-account-form">
+      <input type="text" id="account-name" placeholder="Account Name" required>
+      <input type="number" id="account-amount" placeholder="Account Amount" required>
+      <button type="submit">Add Account</button>
+    </form>
+    <div id="account-list">
+      <!-- Accounts will be displayed here -->
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 MyExpenseTracker. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Check if user is logged in
+    if (!localStorage.getItem("loggedIn")) {
+      window.location.href = "signin.html"; // Redirect to signin if not logged in
+    }
+
+    document.getElementById("add-account-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const accountName = document.getElementById("account-name").value;
+      const accountAmount = document.getElementById("account-amount").value;
+
+      const accountList = JSON.parse(localStorage.getItem("accounts") || "[]");
+
+      const newAccount = {
+        name: accountName,
+        amount: accountAmount
+      };
+
+      accountList.push(newAccount);
+      localStorage.setItem("accounts", JSON.stringify(accountList)); // Store updated accounts list in localStorage
+
+      displayAccounts();
+    });
+
+    function displayAccounts() {
+      const accountList = JSON.parse(localStorage.getItem("accounts") || "[]");
+      const accountListContainer = document.getElementById("account-list");
+
+      accountListContainer.innerHTML = "";
+      accountList.forEach(account => {
+        const accountDiv = document.createElement("div");
+        accountDiv.classList.add("account-item");
+        accountDiv.innerHTML = `<strong>${account.name}</strong>: $${account.amount}`;
+        accountListContainer.appendChild(accountDiv);
+      });
+    }
+
+    displayAccounts();
+  </script>
+</body>
+</html>
