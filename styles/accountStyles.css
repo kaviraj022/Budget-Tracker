@@ -2,12 +2,15 @@
 h1 {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
 }
 
 /* Account List Section */
 #account-list {
   display: flex;
   flex-direction: column;
+  font-weight: lighter;
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -32,7 +35,7 @@ h1 {
 
 button {
   padding: 8px 16px;
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
@@ -69,7 +72,8 @@ form {
   align-items: center; /* Center the form content */
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"],
+input[type="number"] {
   margin-bottom: 10px;
   padding: 10px;
   font-size: 14px;
@@ -99,7 +103,8 @@ form div {
 }
 
 /* Set the same width for both forms */
-#add-account-form-container, #delete-accounts-section {
+#add-account-form-container,
+#delete-accounts-section {
   max-width: 400px; /* Limit the max width to the same size as the container */
   margin-top: 20px;
   padding: 20px;
@@ -152,7 +157,8 @@ form div {
     padding: 10px;
   }
 
-  form input[type="text"], form input[type="number"] {
+  form input[type="text"],
+  form input[type="number"] {
     font-size: 14px; /* Slightly smaller font for input fields */
   }
 
@@ -161,7 +167,8 @@ form div {
     padding: 8px 14px;
   }
 
-  #add-account-form-container, #delete-accounts-section {
+  #add-account-form-container,
+  #delete-accounts-section {
     max-width: 100%; /* Allow forms to use full width of the container */
     padding: 15px;
   }

@@ -1,0 +1,124 @@
+/* Title styling */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Form Section */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Left-align the form elements */
+  gap: 20px; /* Added consistent gap between form elements */
+  max-width: 500px; /* Ensure form doesn't stretch too wide */
+  margin: 0 auto; /* Centering the form */
+}
+
+/* Form Row Styling (Label and Input Left-Justified) */
+.form-row {
+  display: flex;
+  flex-direction: row; /* Keep label and input in a row */
+  justify-content: flex-start; /* Align everything to the left */
+  width: 100%; /* Full width */
+  gap: 20px; /* Space between label and input */
+  align-items: center; /* Align the items vertically in the row */
+}
+
+form label {
+  font-size: 18px;
+  font-weight: bold;
+  width: 30%; /* Make the labels have a consistent width, adjust as needed */
+  text-align: left;
+  margin-right: 10px; /* Ensure the labels have some space from the input */
+  color: #444;
+}
+
+form input[type="number"],
+form input[type="date"],
+form select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 65%; /* Inputs will take up 65% of the row width */
+  box-sizing: border-box;
+  margin-bottom: 10px; /* Ensure space after the fields */
+}
+
+/* Submit Button Styling */
+form button {
+  padding: 12px 20px;
+  background-color: #28a745; /* Green color for submit button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%; /* Full width button */
+  font-size: 16px; /* Adjusted font size */
+}
+
+form button:hover {
+  background-color: #218838;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: translateY(-5px);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Income List Styling */
+#income-list {
+  margin-top: 20px;
+}
+
+.income-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+}
+
+.income-item button {
+  padding: 5px 10px;
+  background-color: #e74c3c; /* Red color for delete button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.income-item button:hover {
+  background-color: #c0392b;
+  transition: background-color 0.3s ease;
+}
+
+/* Mobile View Adjustments */
+@media (max-width: 600px) {
+  form {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .form-row {
+    flex-direction: column; /* Stack label and input vertically on small screens */
+    gap: 10px; /* Reduced gap between label and input */
+  }
+
+  form label {
+    width: 100%; /* Labels take full width on mobile */
+    text-align: left; /* Align labels to the left */
+  }
+
+  form input[type="number"],
+  form input[type="date"],
+  form select {
+    width: 100%; /* Inputs take full width on mobile */
+  }
+
+  form button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
