@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expenses</title>
+  <title>Income</title>
   <link rel="stylesheet" href="styles/globalStyles.css">
   <link rel="stylesheet" href="styles/expenceStyles.css">
   <script src="globalScript.js"></script>
@@ -11,28 +11,27 @@
 <body>
   <header>
     <div class="navbar">
-      <a href="expenses.html" class="active">Expenses</a>
-      <a href="income.html">Income</a>
+      <a href="expenses.html">Expenses</a>
+      <a href="income.html" class="active">Income</a>
       <a href="tranfer.html">Transfer</a>
       <a href="accounts.html">Accounts</a>
       <a href="profile.html">Profile</a>
     </div>
   </header>
-  <div class="container">
-    <h1>Enter Expense</h1>
-    <form id="expense-form">
-      <label for="account">Account:</label>
-      <select id="account-select"></select><br>
+ <div class="container">
+    <form id="income-form">
+        <label for="account">Account:</label>
+        <select id="account-select"></select><br>
 
-      <label for="amount">Amount:</label>
-      <input type="number" id="amount" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" required><br>
 
-      <label for="date">Date:</label>
-      <input type="date" id="date" value=""><br>
+        <label for="date">Date:</label>
+        <input type="date" id="date" value=""><br>
 
-      <button type="submit">Submit</button>
+        <button type="submit">Submit</button>
     </form>
-  </div>
+</div>
 
   <footer>
     <p>&copy; 2024 MyExpenseTracker. All rights reserved.</p>
@@ -52,7 +51,7 @@
       });
     }
 
-    document.getElementById("expense-form").addEventListener("submit", (event) => {
+    document.getElementById("income-form").addEventListener("submit", (event) => {
       event.preventDefault();
       const accountIndex = document.getElementById("account-select").value;
       const amount = parseFloat(document.getElementById("amount").value);
@@ -63,15 +62,10 @@
         return;
       }
 
-      if (accounts[accountIndex].amount < amount) {
-        alert("Insufficient balance.");
-        return;
-      }
-
-      accounts[accountIndex].amount -= amount;
+      accounts[accountIndex].amount += amount;
       localStorage.setItem("accounts", JSON.stringify(accounts));
 
-      alert("Expense recorded successfully!");
+      alert("Income recorded successfully!");
 
       window.location.href = "accounts.html";
     });

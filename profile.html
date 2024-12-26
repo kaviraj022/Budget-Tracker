@@ -6,11 +6,14 @@
   <title>Profile</title>
   <link rel="stylesheet" href="styles/globalStyles.css">
   <link rel="stylesheet" href="styles/profileStyles.css">
+  <script src="globalScript.js"></script>
 </head>
 <body>
   <header>
     <div class="navbar">
       <a href="expenses.html">Expenses</a>
+      <a href="income.html">Income</a>
+      <a href="tranfer.html">Transfer</a>
       <a href="accounts.html">Accounts</a>
       <a href="profile.html" class="active">Profile</a>
     </div>
@@ -28,11 +31,6 @@
   </footer>
 
   <script>
-    // Check if user is logged in
-    if (!localStorage.getItem("loggedIn")) {
-      window.location.href = "signin.html"; // Redirect to signin if not logged in
-    }
-
     // Display user email from localStorage
     const userEmail = localStorage.getItem("userEmail");
     document.getElementById("user-email").textContent = userEmail;

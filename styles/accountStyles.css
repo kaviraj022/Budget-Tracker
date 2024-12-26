@@ -1,7 +1,3 @@
-body {
-  background-color: #f4f4f4;
-}
-
 /* Title styling */
 h1 {
   text-align: center;
@@ -35,17 +31,35 @@ h1 {
 }
 
 button {
-  padding: 12px;
+  padding: 8px 16px;
   background-color: #007BFF;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 5px;
   cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
 button:hover {
   background-color: #0056b3;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+  transform: translateY(-5px); /* Lift the element */
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); /* Shadow effect */
+}
+
+button[type="submit"] {
+  background-color: #28a745;
+}
+
+button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+button[type="button"] {
+  background-color: #dc3545;
+}
+
+button[type="button"]:hover {
+  background-color: #c82333;
 }
 
 /* Add and Delete Account Form Section */
@@ -78,22 +92,10 @@ form button {
   cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
-form button[type="button"] {
-  background-color: #dc3545;
-}
-
 /* Add and Cancel buttons (spacing between them) */
 form div {
   display: flex;
   gap: 10px; /* Add some space between buttons */
-}
-
-form button:hover {
-  background-color: #218838;
-}
-
-form button[type="button"]:hover {
-  background-color: #c82333;
 }
 
 /* Set the same width for both forms */
@@ -101,7 +103,7 @@ form button[type="button"]:hover {
   max-width: 400px; /* Limit the max width to the same size as the container */
   margin-top: 20px;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }

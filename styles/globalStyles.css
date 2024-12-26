@@ -6,30 +6,38 @@
 }
 
 html, body {
-  height: 100%; /* Ensure the body takes up full height */
+  height: 100%;
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1.3rem;
   line-height: 1.6;
-  background-color: #f4f4f4;
+  background-image: url('background.jpg'); /* Background image */
+  background-size: cover; /* Ensure the image covers the entire viewport */
+  background-position: center; /* Center the image */
+  background-attachment: fixed; /* Keeps the background fixed while scrolling */
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Ensure footer is pushed to the bottom */
+  justify-content: flex-start; /* Align content at the top */
+  min-height: 100vh; /* Ensures the body takes full height */
+  overflow: hidden; /* Prevents scroll on the body itself */
 }
 
 /* Header styles */
 header {
   width: 100%;
-  background-color: #333;
+  background-color: rgba(51, 51, 51); /* Semi-transparent background for header */
   color: white;
-  height: 50px;  /* Fixed height for header */
+  height: 60px; /* Fixed consistent height for header */
   display: flex;
-  justify-content: center;  /* Center content horizontally */
-  align-items: center;  /* Center content vertically */
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Optional shadow for separation */
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for separation */
+  position: fixed; /* Fixed at the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Keeps header above other elements */
 }
 
 /* Navbar styles */
@@ -37,14 +45,13 @@ header {
   display: flex;
   justify-content: center;
   gap: 30px;
-  width: 100%;  /* Ensure navbar occupies full width of the header */
 }
 
 .navbar a {
   color: white;
   text-decoration: none;
   font-size: 18px;
-  padding: 5px;
+  padding: 10px 15px;
   border-radius: 5px;
 }
 
@@ -55,41 +62,27 @@ header {
 /* Footer styles */
 footer {
   width: 100%;
-  background-color: #333;
+  background-color: rgba(51, 51, 51); /* Semi-transparent footer background */
   color: white;
   text-align: center;
-  height: 50px;  /* Fixed height for footer */
+  height: 50px; /* Fixed consistent height for footer */
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);  /* Optional shadow for separation */
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Shadow for separation */
+  position: fixed; /* Fixed at the bottom */
+  bottom: 0;
+  left: 0;
 }
 
-/* Container for the content */
+/* Content container */
 .container {
   max-width: 800px;
-  margin: 100px auto 120px;  /* Increased bottom margin to avoid overlap with footer */
-  padding: 50px;
-  background-color: #fff;
+  margin: 80px auto 60px; /* For spacing from header and footer */
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-}
-
-h1 {
-  text-align: center;
-}
-
-/* Logout Button */
-.logout-btn {
-  background-color: #ff4d4d;
-  color: white;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.logout-btn:hover {
-  background-color: #ff1a1a;
+  overflow-y: auto; /* Makes the content scrollable if it exceeds the height */
+  max-height: calc(100vh - 140px); /* Adjusts the height to fit between the header and footer */
 }

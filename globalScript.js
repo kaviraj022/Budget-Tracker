@@ -1,10 +1,4 @@
-// globalScript.js
-
-// Global logout function
-function logout() {
-  localStorage.clear(); // Clear all data from localStorage
-  window.location.href = "logins/signin.html"; // Redirect to Sign In page
+//check if the user is signed in or not
+if (!localStorage.getItem("loggedIn") && window.location.pathname !== '/signin.html') {
+  window.location.href = "signin.html";
 }
-
-// Attach logout to a logout button (if needed)
-document.getElementById("logout-btn")?.addEventListener("click", logout);
