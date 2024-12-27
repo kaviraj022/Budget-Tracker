@@ -53,7 +53,7 @@
       </div>
       <div>
         <button type="submit" id="delete-selected-btn">Delete Selected</button>
-        <button type="button" id="cancel-delete-btn">Cancel</button>
+        <button type="button" id="cancel-delete-btn" style="margin-left:10px;">Cancel</button>
       </div>
     </div>
     
@@ -126,8 +126,8 @@
         accountDiv.classList.add("account-item");
         accountDiv.innerHTML = `
           <div>
-            <strong>${account.name}</strong>: ₹${account.amount}
-          </div>
+            ${account.name}: ₹${account.amount}
+          <div>
         `;
         accountListContainer.appendChild(accountDiv);
       });

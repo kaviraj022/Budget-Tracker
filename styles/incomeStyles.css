@@ -28,11 +28,11 @@ form {
 
 form label {
   font-size: 18px;
-  font-weight: bold;
-  width: 30%; /* Make the labels have a consistent width, adjust as needed */
+  font-weight:600;
+  width: 20%; /* Make the labels have a consistent width, adjust as needed */
   text-align: left;
   margin-right: 10px; /* Ensure the labels have some space from the input */
-  color: #444;
+  margin-bottom: 10px;
 }
 
 form input[type="number"],
@@ -49,13 +49,15 @@ form select {
 
 /* Submit Button Styling */
 form button {
-  padding: 12px 20px;
+  padding: 10px 15px;
   background-color: #28a745; /* Green color for submit button */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%; /* Full width button */
+  width: 50%; /* Full width button */
+  margin-left: auto;
+  margin-right: auto;
   font-size: 16px; /* Adjusted font size */
 }
 
@@ -68,6 +70,9 @@ form button:hover {
 
 /* Income List Styling */
 #income-list {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 20px;
 }
 

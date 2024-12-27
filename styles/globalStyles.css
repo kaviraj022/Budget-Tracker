@@ -29,7 +29,7 @@ header {
   width: 100%;
   background-color: rgba(51, 51, 51); /* Semi-transparent background for header */
   color: white;
-  height: 60px; /* Fixed consistent height for header */
+  height: 50px; /* Fixed consistent height for header */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,7 +51,7 @@ header {
   color: white;
   text-decoration: none;
   font-size: 18px;
-  padding: 10px 15px;
+  padding: 3px 8px;
   border-radius: 5px;
 }
 
@@ -73,6 +73,9 @@ footer {
   position: fixed; /* Fixed at the bottom */
   bottom: 0;
   left: 0;
+}
+footer p{
+  font-size: 18px;
 }
 
 /* Content container */
