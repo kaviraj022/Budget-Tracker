@@ -178,3 +178,8 @@ def change_password_view(request):
             messages.success(request, 'Password changed successfully!')
             return redirect('dashboard')
     return render(request, 'core/change_password.html')
+
+def logout_view(request):
+    request.session.flush()
+    messages.success(request, 'You have been logged out.')
+    return redirect('signin')
