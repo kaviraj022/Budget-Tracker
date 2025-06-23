@@ -1,17 +1,145 @@
-.navbar-dark .navbar-nav .nav-link.active,
-.navbar-dark .navbar-nav .nav-link.active:focus,
-.navbar-dark .navbar-nav .nav-link.active:hover {
-    color: #0d6efd !important;   /* Bootstrap primary blue */
-    font-weight: 600;
-    background: none !important;
-    border: none;
-    box-shadow: none;
+/* Shared navbar styles for both themes */
+.navbar {
+    background-color: #212529 !important;
+    border-bottom: 1px solid #343a40;
+}
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .dropdown-item {
+    color: #f8f9fa !important;
+}
+.navbar .nav-link.active {
+    color: #0d6efd !important;
+}
+.navbar .nav-link:hover {
+    color: #0d6efd !important;
 }
 
-.navbar-dark .navbar-nav .nav-link {
-    color: #fff;
-    transition: color 0.2s;
+body.light-theme .navbar .navbar-brand,
+body.light-theme .navbar .nav-link,
+body.light-theme .navbar .dropdown-item {
+    color: #f8f9fa !important;
 }
-.navbar-dark .navbar-nav .nav-link:hover {
-    color: #0d6efd;
+body.light-theme .navbar .nav-link.active {
+    color: #0d6efd !important;
+}
+body.light-theme .navbar .nav-link:hover {
+    color: #0d6efd !important;
+}
+body.dark-theme .navbar .navbar-brand,
+body.dark-theme .navbar .nav-link,
+body.dark-theme .navbar .dropdown-item {
+    color: #f8f9fa !important;
+}
+body.dark-theme .navbar .nav-link.active {
+    color: #0d6efd !important;
+}
+body.dark-theme .navbar .nav-link:hover {
+    color: #0d6efd !important;
+}
+
+body.light-theme {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+body.light-theme .dropdown-menu {
+    background-color: #fff;
+    color: #212529;
+}
+body.light-theme .dropdown-menu .dropdown-item {
+    color: #212529 !important;
+}
+body.light-theme .dropdown-menu .dropdown-item:hover,
+body.light-theme .dropdown-menu .dropdown-item:focus {
+    background-color: #e9ecef;
+    color: #0d6efd !important;
+}
+body.light-theme .modal-content {
+    background-color: #fff;
+    color: #212529;
+}
+body.light-theme .table {
+    background-color: #fff;
+    color: #212529;
+}
+body.light-theme .form-control,
+body.light-theme .form-select {
+    background-color: #fff;
+    color: #212529;
+}
+body.light-theme .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+body.light-theme .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+body.dark-theme {
+    background-color: #181a1b;
+    color: #f8f9fa;
+}
+body.dark-theme .dropdown-menu {
+    background-color: #23272b;
+    color: #f8f9fa;
+}
+body.dark-theme .modal-content {
+    background-color: #23272b;
+    color: #f8f9fa;
+}
+body.dark-theme .table,
+body.dark-theme .table thead,
+body.dark-theme .table tbody,
+body.dark-theme .table tr,
+body.dark-theme .table th,
+body.dark-theme .table td {
+    background-color: #23272b !important;
+    color: #f8f9fa !important;
+    border-color: #343a40 !important;
+}
+body.dark-theme .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #202225 !important;
+}
+body.dark-theme .table-hover > tbody > tr:hover {
+    background-color: #2c3035 !important;
+    color: #fff !important;
+}
+body.dark-theme .form-control,
+body.dark-theme .form-select {
+    background-color: #23272b;
+    color: #f8f9fa;
+    border-color: #343a40;
+}
+body.dark-theme .form-control:focus,
+body.dark-theme .form-select:focus {
+    background-color: #23272b;
+    color: #f8f9fa;
+    border-color: #0d6efd;
+}
+body.dark-theme .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+body.dark-theme .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+body.dark-theme .alert {
+    background-color: #23272b;
+    color: #f8f9fa;
+    border-color: #343a40;
+}
+
+body {
+    transition: background-color 0.7s cubic-bezier(0.4,0,0.2,1), color 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+body .navbar,
+body .table,
+body .modal-content,
+body .form-control,
+body .form-select,
+body .dropdown-menu,
+body .alert {
+    transition: background-color 0.7s cubic-bezier(0.4,0,0.2,1), color 0.7s cubic-bezier(0.4,0,0.2,1), border-color 0.7s cubic-bezier(0.4,0,0.2,1), box-shadow 0.7s cubic-bezier(0.4,0,0.2,1), filter 0.7s cubic-bezier(0.4,0,0.2,1);
 }
