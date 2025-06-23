@@ -158,3 +158,23 @@ def delete_transaction_view(request, transaction_id):
         messages.success(request, 'Transaction deleted successfully!')
         return redirect('dashboard')
     return render(request, 'core/delete_transaction.html', {'transaction': transaction})
+
+def change_password_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        if not check_password(current_password, user.password):
+            messages.error(request, 'Current password is incorrect.')
+        elif new_password != confirm_password:
+            messages.error(request, 'New passwords do not match.')
+        else:
+            user.password = make_password(new_password)
+            user.save()
+            messages.success(request, 'Password changed successfully!')
+            return redirect('dashboard')
+    return render(request, 'core/change_password.html')

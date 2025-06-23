@@ -9,4 +9,5 @@ urlpatterns = [
     path('delete-account/<int:account_id>/', views.delete_account_view, name='delete_account'),
     path('add-transaction/', views.add_transaction_view, name='add_transaction'),
     path('delete-transaction/<int:transaction_id>/', views.delete_transaction_view, name='delete_transaction'),
+    path('change-password/', views.change_password_view, name='change_password'),
 ] 
