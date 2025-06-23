@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from .models import User, BankAccount, Transaction
 from django.utils import timezone
+from django.http import JsonResponse
+import json
 
 # Create your views here.
 
@@ -159,27 +161,26 @@ def delete_transaction_view(request, transaction_id):
         return redirect('dashboard')
     return render(request, 'core/delete_transaction.html', {'transaction': transaction})
 
-def change_password_view(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('signin')
-    user = get_object_or_404(User, id=user_id)
-    if request.method == 'POST':
-        current_password = request.POST.get('current_password')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
-        if not check_password(current_password, user.password):
-            messages.error(request, 'Current password is incorrect.')
-        elif new_password != confirm_password:
-            messages.error(request, 'New passwords do not match.')
-        else:
-            user.password = make_password(new_password)
-            user.save()
-            messages.success(request, 'Password changed successfully!')
-            return redirect('dashboard')
-    return render(request, 'core/change_password.html')
-
 def logout_view(request):
     request.session.flush()
     messages.success(request, 'You have been logged out.')
     return redirect('signin')
+
+def ajax_change_password(request):
+    if request.method == 'POST' and request.headers.get('Content-Type') == 'application/json':
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
+        user = get_object_or_404(User, id=user_id)
+        data = json.loads(request.body)
+        current_password = data.get('current_password')
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
+        if not check_password(current_password, user.password):
+            return JsonResponse({'success': False, 'message': 'Current password is incorrect.'})
+        if new_password != confirm_password:
+            return JsonResponse({'success': False, 'message': 'New passwords do not match.'})
+        user.password = make_password(new_password)
+        user.save()
+        return JsonResponse({'success': True, 'message': 'Password changed successfully!'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
