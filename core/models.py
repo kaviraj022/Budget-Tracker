@@ -10,6 +10,9 @@ class User(models.Model):
     def __str__(self):
         return self.username
 
+    class Meta:
+        db_table = 'users'
+
 AMOUNT_TYPE_CHOICES = [
     ('USD', 'Dollars'),
     ('INR', 'Rupees'),
@@ -49,3 +52,6 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.transaction_type}: {self.amount} ({self.account.account_name})"
+
+    class Meta:
+        db_table = 'transactions'
