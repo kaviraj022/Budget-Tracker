@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'BudgetTrackerDjango.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'budget_tracker',
+        'USER': 'root',
+        'PASSWORD': 'Kavi#8#0#9#8#',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 

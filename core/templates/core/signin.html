@@ -49,11 +49,18 @@
                     <div class="card">
                         <div class="card-body p-4">
                             <h2 class="card-title text-center mb-4">Sign In</h2>
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                             <form method="post" action="{% url 'signin' %}">
                                 {% csrf_token %}
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <label for="username_or_email" class="form-label">Username or Email</label>
+                                    <input type="text" class="form-control" id="username_or_email" name="username_or_email" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
