@@ -4,6 +4,17 @@
 {% block title %}Accounts - Budget Tracker{% endblock %}
 
 {% block content %}
+<style>
+/* Remove number input spinners for editable-balance */
+.editable-balance::-webkit-outer-spin-button,
+.editable-balance::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.editable-balance[type=number] {
+    -moz-appearance: textfield;
+}
+</style>
 <h2>Your Accounts</h2>
 <table class="table table-bordered">
     <thead>
