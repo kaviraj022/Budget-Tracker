@@ -18,7 +18,7 @@
             <td>{{ account.account_name }}</td>
             <td>
                 <input type="number" class="form-control d-inline w-auto editable-balance" data-account-id="{{ account.id }}" value="{{ account.balance|floatformat:2 }}" min="0" step="0.01">
-                {{ account.get_amount_type_display|lower }}
+                {{ account.get_amount_type_display }}
             </td>
         </tr>
         {% empty %}
