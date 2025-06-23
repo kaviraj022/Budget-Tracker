@@ -3,35 +3,7 @@
 {% block title %}Dashboard - Budget Tracker{% endblock %}
 
 {% block content %}
-<h2>Your Accounts</h2>
-<a href="{% url 'add_account' %}" class="btn btn-primary mb-3">Add Account</a>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Account Name</th>
-            <th>Balance</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for account in accounts %}
-        <tr>
-            <td>{{ account.account_name }}</td>
-            <td>${{ account.balance|floatformat:2 }}</td>
-            <td>
-                <form method="post" action="{% url 'delete_account' account.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this account?');">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3" class="text-center">No accounts found.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Recent Transactions</h2>
     <a href="{% url 'add_transaction' %}" class="btn btn-success">Add Transaction</a>
 </div>
@@ -66,4 +38,4 @@
         {% endfor %}
     </tbody>
 </table>
-{% endblock %} 
+{% endblock %}

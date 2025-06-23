@@ -184,3 +184,27 @@ def ajax_change_password(request):
         user.save()
         return JsonResponse({'success': True, 'message': 'Password changed successfully!'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+def ajax_add_account(request):
+    if request.method == 'POST' and request.headers.get('Content-Type') == 'application/json':
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
+        user = get_object_or_404(User, id=user_id)
+        data = json.loads(request.body)
+        account_name = data.get('account_name')
+        if not account_name or not account_name.strip():
+            return JsonResponse({'success': False, 'message': 'Account name is required.'})
+        if Account.objects.filter(user=user, account_name=account_name).exists():
+            return JsonResponse({'success': False, 'message': 'Account with this name already exists.'})
+        Account.objects.create(user=user, account_name=account_name)
+        return JsonResponse({'success': True, 'message': 'Account added successfully!'})
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+def accounts_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
+    user = get_object_or_404(User, id=user_id)
+    accounts = Account.objects.filter(user=user)
+    return render(request, 'core/accounts.html', {'accounts': accounts, 'user': user})
