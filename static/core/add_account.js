@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         errorDiv.textContent = '';
 
         const account_name = document.getElementById('account_name').value;
+        const amount_type = document.getElementById('amount_type').value;
         if (!account_name.trim()) {
             errorDiv.textContent = 'Account name is required.';
             errorDiv.style.display = 'block';
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
-            body: JSON.stringify({ account_name })
+            body: JSON.stringify({ account_name, amount_type })
         })
         .then(response => response.json())
         .then(data => {

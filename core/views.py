@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User, Account, Transaction
+from .models import User, Account, Transaction, AMOUNT_TYPE_CHOICES
 from django.utils import timezone
 from django.http import JsonResponse
 import json
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -207,4 +211,28 @@ def accounts_view(request):
         return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     accounts = Account.objects.filter(user=user)
-    return render(request, 'core/accounts.html', {'accounts': accounts, 'user': user})
+    return render(request, 'core/accounts.html', {
+        'accounts': accounts,
+        'user': user,
+        'amount_type_choices': AMOUNT_TYPE_CHOICES,
+    })
+
+@require_POST
+@csrf_exempt
+def add_account_ajax(request):
+    try:
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
+        user = get_object_or_404(User, id=user_id)
+        data = json.loads(request.body)
+        account_name = data.get('account_name', '').strip()
+        amount_type = data.get('amount_type', '').strip()
+        if not account_name or not amount_type:
+            return JsonResponse({'success': False, 'message': 'All fields are required.'})
+        if Account.objects.filter(user=user, account_name=account_name).exists():
+            return JsonResponse({'success': False, 'message': 'Account with this name already exists.'})
+        account = Account.objects.create(user=user, account_name=account_name, balance=0, amount_type=amount_type)
+        return JsonResponse({'success': True, 'message': 'Account added successfully.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
