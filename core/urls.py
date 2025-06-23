@@ -13,4 +13,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('ajax/change-password/', views.ajax_change_password, name='ajax_change_password'),
     path('ajax/add-account/', views.add_account_ajax, name='add_account_ajax'),
+    path('ajax/update-balance/', views.update_balance_ajax, name='update_balance_ajax'),
 ] 

@@ -186,34 +186,6 @@ def ajax_change_password(request):
         return JsonResponse({'success': True, 'message': 'Password changed successfully!'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
 
-@user_login_required
-def ajax_add_account(request):
-    if request.method == 'POST' and request.headers.get('Content-Type') == 'application/json':
-        user_id = request.session.get('user_id')
-        if not user_id:
-            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
-        user = get_object_or_404(User, id=user_id)
-        data = json.loads(request.body)
-        account_name = data.get('account_name')
-        if not account_name or not account_name.strip():
-            return JsonResponse({'success': False, 'message': 'Account name is required.'})
-        if Account.objects.filter(user=user, account_name=account_name).exists():
-            return JsonResponse({'success': False, 'message': 'Account with this name already exists.'})
-        Account.objects.create(user=user, account_name=account_name)
-        return JsonResponse({'success': True, 'message': 'Account added successfully!'})
-    return JsonResponse({'success': False, 'message': 'Invalid request.'})
-
-@user_login_required
-def accounts_view(request):
-    user_id = request.session.get('user_id')
-    user = get_object_or_404(User, id=user_id)
-    accounts = Account.objects.filter(user=user)
-    return render(request, 'core/accounts.html', {
-        'accounts': accounts,
-        'user': user,
-        'amount_type_choices': AMOUNT_TYPE_CHOICES,
-    })
-
 @require_POST
 @user_login_required
 def add_account_ajax(request):
@@ -237,4 +209,37 @@ def add_account_ajax(request):
         return JsonResponse({'success': True, 'message': 'Account added successfully.'})
     except Exception as e:
         print('Exception:', e)
+        return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
+
+@user_login_required
+def accounts_view(request):
+    user_id = request.session.get('user_id')
+    user = get_object_or_404(User, id=user_id)
+    accounts = Account.objects.filter(user=user)
+    return render(request, 'core/accounts.html', {
+        'accounts': accounts,
+        'user': user,
+        'amount_type_choices': AMOUNT_TYPE_CHOICES,
+    })
+
+@require_POST
+@user_login_required
+def update_balance_ajax(request):
+    try:
+        user_id = request.session.get('user_id')
+        user = get_object_or_404(User, id=user_id)
+        data = json.loads(request.body)
+        account_id = data.get('account_id')
+        balance = data.get('balance')
+        if not account_id or balance is None:
+            return JsonResponse({'success': False, 'message': 'Missing data.'})
+        try:
+            balance = float(balance)
+        except ValueError:
+            return JsonResponse({'success': False, 'message': 'Invalid balance.'})
+        account = get_object_or_404(Account, id=account_id, user=user)
+        account.balance = balance
+        account.save()
+        return JsonResponse({'success': True, 'message': 'Balance updated.'})
+    except Exception as e:
         return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})

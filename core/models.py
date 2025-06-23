@@ -30,6 +30,9 @@ class Account(models.Model):
     def __str__(self):
         return f"{self.account_name} ({self.user.username})"
 
+    class Meta:
+        db_table = 'accounts'
+
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
         ('INCOME', 'Income'),
