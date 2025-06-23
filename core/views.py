@@ -10,6 +10,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .utils import user_login_required
+from datetime import date
+from decimal import Decimal
 
 # Create your views here.
 
@@ -68,10 +70,17 @@ def signup_view(request):
 @user_login_required
 def dashboard_view(request):
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     accounts = Account.objects.filter(user=user)
     transactions = Transaction.objects.filter(user=user).order_by('-transaction_date')[:10]
-    return render(request, 'core/dashboard.html', {'accounts': accounts, 'user': user, 'transactions': transactions})
+    return render(request, 'core/dashboard.html', {
+        'accounts': accounts,
+        'user': user,
+        'transactions': transactions,
+        'today': date.today().isoformat(),
+    })
 
 @user_login_required
 def add_account_view(request):
@@ -141,19 +150,24 @@ def add_transaction_view(request):
 @user_login_required
 def delete_transaction_view(request, transaction_id):
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     transaction = get_object_or_404(Transaction, id=transaction_id, user=user)
     if request.method == 'POST':
-        # Reverse the transaction effect on account balances
+        # Roll back the transaction effect on account balances
+        amount = Decimal(str(transaction.amount))
         if transaction.transaction_type == 'INCOME':
-            transaction.account.balance -= float(transaction.amount)
-            transaction.account.save()
+            if transaction.account:
+                transaction.account.balance -= amount
+                transaction.account.save()
         elif transaction.transaction_type == 'EXPENSE':
-            transaction.account.balance += float(transaction.amount)
-            transaction.account.save()
-        elif transaction.transaction_type == 'TRANSFER' and transaction.to_account:
-            transaction.account.balance += float(transaction.amount)
-            transaction.to_account.balance -= float(transaction.amount)
+            if transaction.account:
+                transaction.account.balance += amount
+                transaction.account.save()
+        elif transaction.transaction_type == 'TRANSFER' and transaction.account and transaction.to_account:
+            transaction.account.balance += amount
+            transaction.to_account.balance -= amount
             transaction.account.save()
             transaction.to_account.save()
         transaction.delete()
@@ -241,5 +255,93 @@ def update_balance_ajax(request):
         account.balance = balance
         account.save()
         return JsonResponse({'success': True, 'message': 'Balance updated.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
+
+@require_POST
+def add_transaction_ajax(request):
+    try:
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
+        user = get_object_or_404(User, id=user_id)
+        data = json.loads(request.body)
+        transaction_type = data.get('transaction_type')
+        amount = data.get('amount')
+        description = data.get('description')
+        transaction_date = data.get('transaction_date')
+        if not transaction_type or not amount or not description or not transaction_date:
+            return JsonResponse({'success': False, 'message': 'All fields are required.'})
+        amount = Decimal(str(amount))
+        if transaction_type in ['INCOME', 'EXPENSE']:
+            account_id = data.get('account_id')
+            if not account_id:
+                return JsonResponse({'success': False, 'message': 'Account is required.'})
+            account = get_object_or_404(Account, id=account_id, user=user)
+            transaction = Transaction.objects.create(
+                user=user,
+                account=account,
+                amount=amount,
+                description=description,
+                transaction_type=transaction_type,
+                transaction_date=transaction_date
+            )
+            if transaction_type == 'INCOME':
+                account.balance += amount
+            else:
+                account.balance -= amount
+            account.save()
+        elif transaction_type == 'TRANSFER':
+            from_account_id = data.get('from_account_id')
+            to_account_id = data.get('to_account_id')
+            if not from_account_id or not to_account_id or from_account_id == to_account_id:
+                return JsonResponse({'success': False, 'message': 'Valid from and to accounts are required.'})
+            from_account = get_object_or_404(Account, id=from_account_id, user=user)
+            to_account = get_object_or_404(Account, id=to_account_id, user=user)
+            transaction = Transaction.objects.create(
+                user=user,
+                account=from_account,
+                to_account=to_account,
+                amount=amount,
+                description=description,
+                transaction_type=transaction_type,
+                transaction_date=transaction_date
+            )
+            from_account.balance -= amount
+            to_account.balance += amount
+            from_account.save()
+            to_account.save()
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid transaction type.'})
+        return JsonResponse({'success': True, 'message': 'Transaction added successfully.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
+
+@require_POST
+@csrf_exempt
+def delete_transaction_ajax(request, transaction_id):
+    try:
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
+        user = get_object_or_404(User, id=user_id)
+        transaction = get_object_or_404(Transaction, id=transaction_id, user=user)
+        amount = Decimal(str(transaction.amount))
+        # Roll back the transaction effect on account balances
+        if transaction.transaction_type == 'INCOME':
+            if transaction.account:
+                transaction.account.balance -= amount
+                transaction.account.save()
+        elif transaction.transaction_type == 'EXPENSE':
+            if transaction.account:
+                transaction.account.balance += amount
+                transaction.account.save()
+        elif transaction.transaction_type == 'TRANSFER' and transaction.account and transaction.to_account:
+            transaction.account.balance += amount
+            transaction.to_account.balance -= amount
+            transaction.account.save()
+            transaction.to_account.save()
+        transaction.delete()
+        return JsonResponse({'success': True, 'message': 'Transaction deleted successfully!'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
