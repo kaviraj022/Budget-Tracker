@@ -43,15 +43,15 @@ class Transaction(models.Model):
         ('TRANSFER', 'Transfer'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, related_name='transactions')
     to_account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, related_name='received_transactions')
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.CharField(max_length=200)
     transaction_type = models.CharField(max_length=8, choices=TRANSACTION_TYPES)
-    date = models.DateField(auto_now_add=True)
+    transaction_date = models.DateField()
 
     def __str__(self):
-        return f"{self.transaction_type}: {self.amount} ({self.account.account_name})"
+        return f"{self.transaction_type}: {self.amount} ({self.account.account_name if self.account else 'N/A'})"
 
     class Meta:
         db_table = 'transactions'

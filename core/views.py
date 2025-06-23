@@ -70,7 +70,7 @@ def dashboard_view(request):
     user_id = request.session.get('user_id')
     user = get_object_or_404(User, id=user_id)
     accounts = Account.objects.filter(user=user)
-    transactions = Transaction.objects.filter(user=user).order_by('-date')[:10]
+    transactions = Transaction.objects.filter(user=user).order_by('-transaction_date')[:10]
     return render(request, 'core/dashboard.html', {'accounts': accounts, 'user': user, 'transactions': transactions})
 
 @user_login_required
@@ -120,7 +120,7 @@ def add_transaction_view(request):
             amount=amount,
             description=description,
             transaction_type=transaction_type,
-            date=timezone.now().date()
+            transaction_date=timezone.now().date()
         )
         # Update balances
         if transaction_type == 'INCOME':
