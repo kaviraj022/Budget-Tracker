@@ -218,16 +218,23 @@ def accounts_view(request):
 @user_login_required
 def add_account_ajax(request):
     try:
+        print('add_account_ajax called')
         user_id = request.session.get('user_id')
+        print('user_id:', user_id)
         user = get_object_or_404(User, id=user_id)
         data = json.loads(request.body)
+        print('POST data:', data)
         account_name = data.get('account_name', '').strip()
         amount_type = data.get('amount_type', '').strip()
         if not account_name or not amount_type:
+            print('Missing fields')
             return JsonResponse({'success': False, 'message': 'All fields are required.'})
         if Account.objects.filter(user=user, account_name=account_name).exists():
+            print('Account exists')
             return JsonResponse({'success': False, 'message': 'Account with this name already exists.'})
         account = Account.objects.create(user=user, account_name=account_name, balance=0, amount_type=amount_type)
+        print('Account created:', account)
         return JsonResponse({'success': True, 'message': 'Account added successfully.'})
     except Exception as e:
+        print('Exception:', e)
         return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})

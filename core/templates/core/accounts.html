@@ -10,23 +10,19 @@
         <tr>
             <th>Account Name</th>
             <th>Balance</th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         {% for account in accounts %}
         <tr>
             <td>{{ account.account_name }}</td>
-            <td>${{ account.balance|floatformat:2 }}</td>
             <td>
-                <form method="post" action="{% url 'delete_account' account.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this account?');">Delete</button>
-                </form>
+                <input type="number" class="form-control d-inline w-auto editable-balance" data-account-id="{{ account.id }}" value="{{ account.balance|floatformat:2 }}" min="0" step="0.01">
+                {{ account.get_amount_type_display|lower }}
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="3" class="text-center">No accounts found.</td></tr>
+        <tr><td colspan="2" class="text-center">No accounts found.</td></tr>
         {% endfor %}
     </tbody>
 </table>
@@ -50,6 +46,14 @@
                 <label for="account_name" class="form-label">Account Name</label>
                 <input type="text" class="form-control" id="account_name" name="account_name" required>
             </div>
+            <div class="mb-3">
+                <label for="amount_type" class="form-label">Amount Type</label>
+                <select class="form-select" id="amount_type" name="amount_type" required>
+                    {% for code, label in amount_type_choices %}
+                        <option value="{{ code }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div id="addAccountError" class="text-danger mb-2" style="display:none;"></div>
         </div>
         <div class="modal-footer">
@@ -61,4 +65,5 @@
   </div>
 </div>
 <script src="{% static 'core/add_account.js' %}"></script>
+<script src="{% static 'core/edit_balance.js' %}"></script>
 {% endblock %}
