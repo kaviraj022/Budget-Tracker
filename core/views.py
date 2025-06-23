@@ -65,19 +65,17 @@ def signup_view(request):
 
     return render(request, 'core/signup.html')
 
+@user_login_required
 def dashboard_view(request):
     user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     accounts = Account.objects.filter(user=user)
     transactions = Transaction.objects.filter(user=user).order_by('-date')[:10]
     return render(request, 'core/dashboard.html', {'accounts': accounts, 'user': user, 'transactions': transactions})
 
+@user_login_required
 def add_account_view(request):
     user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
         account_name = request.POST.get('account_name')
@@ -89,10 +87,9 @@ def add_account_view(request):
             messages.error(request, 'Account name is required.')
     return render(request, 'core/add_account.html')
 
+@user_login_required
 def delete_account_view(request, account_id):
     user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     account = get_object_or_404(Account, id=account_id, user=user)
     if request.method == 'POST':
@@ -101,10 +98,9 @@ def delete_account_view(request, account_id):
         return redirect('dashboard')
     return render(request, 'core/delete_account.html', {'account': account})
 
+@user_login_required
 def add_transaction_view(request):
     user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     accounts = Account.objects.filter(user=user)
     if request.method == 'POST':
@@ -142,10 +138,9 @@ def add_transaction_view(request):
         return redirect('dashboard')
     return render(request, 'core/add_transaction.html', {'accounts': accounts})
 
+@user_login_required
 def delete_transaction_view(request, transaction_id):
     user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     transaction = get_object_or_404(Transaction, id=transaction_id, user=user)
     if request.method == 'POST':
@@ -171,6 +166,7 @@ def logout_view(request):
     messages.success(request, 'You have been logged out.')
     return redirect('signin')
 
+@user_login_required
 def ajax_change_password(request):
     if request.method == 'POST' and request.headers.get('Content-Type') == 'application/json':
         user_id = request.session.get('user_id')
@@ -190,6 +186,7 @@ def ajax_change_password(request):
         return JsonResponse({'success': True, 'message': 'Password changed successfully!'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
 
+@user_login_required
 def ajax_add_account(request):
     if request.method == 'POST' and request.headers.get('Content-Type') == 'application/json':
         user_id = request.session.get('user_id')
@@ -206,10 +203,9 @@ def ajax_add_account(request):
         return JsonResponse({'success': True, 'message': 'Account added successfully!'})
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
 
+@user_login_required
 def accounts_view(request):
     user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     accounts = Account.objects.filter(user=user)
     return render(request, 'core/accounts.html', {
@@ -223,8 +219,6 @@ def accounts_view(request):
 def add_account_ajax(request):
     try:
         user_id = request.session.get('user_id')
-        if not user_id:
-            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
         user = get_object_or_404(User, id=user_id)
         data = json.loads(request.body)
         account_name = data.get('account_name', '').strip()
