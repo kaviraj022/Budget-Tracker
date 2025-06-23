@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from .utils import user_login_required
 
 # Create your views here.
 
@@ -218,7 +219,7 @@ def accounts_view(request):
     })
 
 @require_POST
-@csrf_exempt
+@user_login_required
 def add_account_ajax(request):
     try:
         user_id = request.session.get('user_id')
