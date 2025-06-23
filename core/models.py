@@ -10,7 +10,7 @@ class User(models.Model):
     def __str__(self):
         return self.username
 
-class BankAccount(models.Model):
+class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts')
     account_name = models.CharField(max_length=100)
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -25,8 +25,8 @@ class Transaction(models.Model):
         ('TRANSFER', 'Transfer'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    account = models.ForeignKey(BankAccount, on_delete=models.CASCADE, related_name='transactions')
-    to_account = models.ForeignKey(BankAccount, on_delete=models.CASCADE, null=True, blank=True, related_name='received_transactions')
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
+    to_account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True, related_name='received_transactions')
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     description = models.CharField(max_length=200)
     transaction_type = models.CharField(max_length=8, choices=TRANSACTION_TYPES)
