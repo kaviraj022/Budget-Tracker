@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User
+from .models import User, BankAccount
 
 # Create your views here.
 
@@ -11,14 +11,15 @@ def signin_view(request):
         password = request.POST.get('password')
 
         try:
-            # Try to find user by username or email
-            user = User.objects.get(username=username_or_email) or User.objects.get(email=username_or_email)
+            user = User.objects.get(username=username_or_email)
         except User.DoesNotExist:
-            messages.error(request, 'Invalid username/email or password')
-            return redirect('signin')
+            try:
+                user = User.objects.get(email=username_or_email)
+            except User.DoesNotExist:
+                messages.error(request, 'Invalid username/email or password')
+                return redirect('signin')
 
         if check_password(password, user.password):
-            # Store user info in session
             request.session['user_id'] = user.id
             request.session['username'] = user.username
             messages.success(request, 'Logged in successfully')
@@ -35,17 +36,14 @@ def signup_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        # Check if username exists
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists')
             return redirect('signup')
 
-        # Check if email exists
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists')
             return redirect('signup')
 
-        # Create new user
         hashed_password = make_password(password)
         user = User(
             username=username,
@@ -58,3 +56,38 @@ def signup_view(request):
         return redirect('signin')
 
     return render(request, 'core/signup.html')
+
+def dashboard_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
+    user = get_object_or_404(User, id=user_id)
+    accounts = BankAccount.objects.filter(user=user)
+    return render(request, 'core/dashboard.html', {'accounts': accounts, 'user': user})
+
+def add_account_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        account_name = request.POST.get('account_name')
+        if account_name:
+            BankAccount.objects.create(user=user, account_name=account_name)
+            messages.success(request, 'Account added successfully!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Account name is required.')
+    return render(request, 'core/add_account.html')
+
+def delete_account_view(request, account_id):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
+    user = get_object_or_404(User, id=user_id)
+    account = get_object_or_404(BankAccount, id=account_id, user=user)
+    if request.method == 'POST':
+        account.delete()
+        messages.success(request, 'Account deleted successfully!')
+        return redirect('dashboard')
+    return render(request, 'core/delete_account.html', {'account': account})
