@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction - Budget Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Add Transaction</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="transaction_type" class="form-label">Transaction Type</label>
+                <select class="form-select" id="transaction_type" name="transaction_type" required>
+                    <option value="">Select type...</option>
+                    <option value="INCOME">Income</option>
+                    <option value="EXPENSE">Expense</option>
+                    <option value="TRANSFER">Transfer</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="account" class="form-label">From Account</label>
+                <select class="form-select" id="account" name="account" required>
+                    <option value="">Select account...</option>
+                    {% for account in accounts %}
+                    <option value="{{ account.id }}">{{ account.account_name }} (${{ account.balance|floatformat:2 }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3" id="to_account_container" style="display: none;">
+                <label for="to_account" class="form-label">To Account</label>
+                <select class="form-select" id="to_account" name="to_account">
+                    <option value="">Select account...</option>
+                    {% for account in accounts %}
+                    <option value="{{ account.id }}">{{ account.account_name }} (${{ account.balance|floatformat:2 }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="description" name="description" required>
+            </div>
+            <button type="submit" class="btn btn-success">Add Transaction</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+    <script>
+    document.getElementById('transaction_type').addEventListener('change', function() {
+        const toAccountContainer = document.getElementById('to_account_container');
+        const toAccountSelect = document.getElementById('to_account');
+        if (this.value === 'TRANSFER') {
+            toAccountContainer.style.display = 'block';
+            toAccountSelect.required = true;
+        } else {
+            toAccountContainer.style.display = 'none';
+            toAccountSelect.required = false;
+        }
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

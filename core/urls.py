@@ -7,4 +7,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('add-account/', views.add_account_view, name='add_account'),
     path('delete-account/<int:account_id>/', views.delete_account_view, name='delete_account'),
+    path('add-transaction/', views.add_transaction_view, name='add_transaction'),
+    path('delete-transaction/<int:transaction_id>/', views.delete_transaction_view, name='delete_transaction'),
 ] 

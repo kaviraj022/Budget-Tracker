@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User, BankAccount
+from .models import User, BankAccount, Transaction
+from django.utils import timezone
 
 # Create your views here.
 
@@ -63,7 +64,8 @@ def dashboard_view(request):
         return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     accounts = BankAccount.objects.filter(user=user)
-    return render(request, 'core/dashboard.html', {'accounts': accounts, 'user': user})
+    transactions = Transaction.objects.filter(user=user).order_by('-date')[:10]
+    return render(request, 'core/dashboard.html', {'accounts': accounts, 'user': user, 'transactions': transactions})
 
 def add_account_view(request):
     user_id = request.session.get('user_id')
@@ -91,3 +93,68 @@ def delete_account_view(request, account_id):
         messages.success(request, 'Account deleted successfully!')
         return redirect('dashboard')
     return render(request, 'core/delete_account.html', {'account': account})
+
+def add_transaction_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
+    user = get_object_or_404(User, id=user_id)
+    accounts = BankAccount.objects.filter(user=user)
+    if request.method == 'POST':
+        transaction_type = request.POST.get('transaction_type')
+        amount = request.POST.get('amount')
+        description = request.POST.get('description')
+        account_id = request.POST.get('account')
+        to_account_id = request.POST.get('to_account')
+        account = get_object_or_404(BankAccount, id=account_id, user=user)
+        to_account = None
+        if transaction_type == 'TRANSFER' and to_account_id:
+            to_account = get_object_or_404(BankAccount, id=to_account_id, user=user)
+        transaction = Transaction.objects.create(
+            user=user,
+            account=account,
+            to_account=to_account,
+            amount=amount,
+            description=description,
+            transaction_type=transaction_type,
+            date=timezone.now().date()
+        )
+        # Update balances
+        if transaction_type == 'INCOME':
+            account.balance += float(amount)
+            account.save()
+        elif transaction_type == 'EXPENSE':
+            account.balance -= float(amount)
+            account.save()
+        elif transaction_type == 'TRANSFER' and to_account:
+            account.balance -= float(amount)
+            to_account.balance += float(amount)
+            account.save()
+            to_account.save()
+        messages.success(request, 'Transaction added successfully!')
+        return redirect('dashboard')
+    return render(request, 'core/add_transaction.html', {'accounts': accounts})
+
+def delete_transaction_view(request, transaction_id):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
+    user = get_object_or_404(User, id=user_id)
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=user)
+    if request.method == 'POST':
+        # Reverse the transaction effect on account balances
+        if transaction.transaction_type == 'INCOME':
+            transaction.account.balance -= float(transaction.amount)
+            transaction.account.save()
+        elif transaction.transaction_type == 'EXPENSE':
+            transaction.account.balance += float(transaction.amount)
+            transaction.account.save()
+        elif transaction.transaction_type == 'TRANSFER' and transaction.to_account:
+            transaction.account.balance += float(transaction.amount)
+            transaction.to_account.balance -= float(transaction.amount)
+            transaction.account.save()
+            transaction.to_account.save()
+        transaction.delete()
+        messages.success(request, 'Transaction deleted successfully!')
+        return redirect('dashboard')
+    return render(request, 'core/delete_transaction.html', {'transaction': transaction})
