@@ -43,7 +43,7 @@
     <div class="container mt-4">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                <div class="alert alert-{{ message.tags }} auto-dismiss-alert">{{ message }}</div>
             {% endfor %}
         {% endif %}
         {% block content %}{% endblock %}
@@ -111,6 +111,17 @@
             const current = localStorage.getItem('theme') || 'dark';
             setTheme(current === 'dark' ? 'light' : 'dark');
         });
+        // Auto-dismiss alerts after 3 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.auto-dismiss-alert').forEach(function(alert) {
+                alert.classList.add('fade');
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            });
+        }, 1000);
     });
     </script>
 </body>
