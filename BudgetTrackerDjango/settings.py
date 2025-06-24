@@ -62,7 +62,7 @@ ROOT_URLCONF = 'BudgetTrackerDjango.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,14 +84,11 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL"), 
-        conn_max_age=600
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
     )
 }
-
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
