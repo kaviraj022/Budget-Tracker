@@ -80,16 +80,18 @@ WSGI_APPLICATION = 'BudgetTrackerDjango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres', 
-        'USER': 'postgres',
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': 'db.cyilheuibsapabdzudbi.supabase.co',  
-        'PORT': '5432',  
-    }
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL"), 
+        conn_max_age=600
+    )
 }
+
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

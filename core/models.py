@@ -1,6 +1,5 @@
 from django.db import models
-
-# Create your models here.
+from django.utils import timezone
 
 class User(models.Model):
     username = models.CharField(max_length=100, unique=True)
@@ -48,7 +47,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.CharField(max_length=200)
     transaction_type = models.CharField(max_length=8, choices=TRANSACTION_TYPES)
-    transaction_date = models.DateField()
+    transaction_date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"{self.transaction_type}: {self.amount} ({self.account.account_name if self.account else 'N/A'})"
