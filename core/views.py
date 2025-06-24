@@ -7,7 +7,7 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from .utils import user_login_required
 from datetime import date
@@ -390,5 +390,93 @@ def rename_account_ajax(request, account_id):
         account.account_name = new_name
         account.save()
         return JsonResponse({'success': True, 'message': 'Account renamed successfully.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
+
+@require_GET
+@user_login_required
+def get_transaction_ajax(request, transaction_id):
+    try:
+        user_id = request.session.get('user_id')
+        user = get_object_or_404(User, id=user_id)
+        transaction = get_object_or_404(Transaction, id=transaction_id, user=user)
+        data = {
+            'id': transaction.id,
+            'transaction_type': transaction.transaction_type,
+            'amount': str(transaction.amount),
+            'description': transaction.description,
+            'transaction_date': transaction.transaction_date.isoformat(),
+            'account_id': transaction.account.id if transaction.account else None,
+            'from_account_id': transaction.account.id if transaction.account else None,
+            'to_account_id': transaction.to_account.id if transaction.to_account else None,
+        }
+        return JsonResponse({'success': True, 'transaction': data})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
+
+from django.views.decorators.csrf import csrf_exempt
+@require_POST
+@csrf_exempt
+@user_login_required
+def edit_transaction_ajax(request, transaction_id):
+    try:
+        user_id = request.session.get('user_id')
+        user = get_object_or_404(User, id=user_id)
+        transaction = get_object_or_404(Transaction, id=transaction_id, user=user)
+        data = json.loads(request.body)
+        new_type = data.get('transaction_type')
+        new_amount = Decimal(str(data.get('amount')))
+        new_description = data.get('description')
+        new_date = data.get('transaction_date')
+        # Roll back old effect
+        old_amount = Decimal(str(transaction.amount))
+        if transaction.transaction_type == 'INCOME' and transaction.account:
+            transaction.account.balance -= old_amount
+            transaction.account.save()
+        elif transaction.transaction_type == 'EXPENSE' and transaction.account:
+            transaction.account.balance += old_amount
+            transaction.account.save()
+        elif transaction.transaction_type == 'TRANSFER' and transaction.account and transaction.to_account:
+            transaction.account.balance += old_amount
+            transaction.to_account.balance -= old_amount
+            transaction.account.save()
+            transaction.to_account.save()
+        # Update fields
+        if new_type in ['INCOME', 'EXPENSE']:
+            account_id = data.get('account_id')
+            if not account_id:
+                return JsonResponse({'success': False, 'message': 'Account is required.'})
+            account = get_object_or_404(Account, id=account_id, user=user)
+            transaction.account = account
+            transaction.to_account = None
+        elif new_type == 'TRANSFER':
+            from_account_id = data.get('from_account_id')
+            to_account_id = data.get('to_account_id')
+            if not from_account_id or not to_account_id or from_account_id == to_account_id:
+                return JsonResponse({'success': False, 'message': 'Valid from and to accounts are required.'})
+            from_account = get_object_or_404(Account, id=from_account_id, user=user)
+            to_account = get_object_or_404(Account, id=to_account_id, user=user)
+            transaction.account = from_account
+            transaction.to_account = to_account
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid transaction type.'})
+        transaction.transaction_type = new_type
+        transaction.amount = new_amount
+        transaction.description = new_description
+        transaction.transaction_date = new_date
+        transaction.save()
+        # Apply new effect
+        if new_type == 'INCOME':
+            transaction.account.balance += new_amount
+            transaction.account.save()
+        elif new_type == 'EXPENSE':
+            transaction.account.balance -= new_amount
+            transaction.account.save()
+        elif new_type == 'TRANSFER':
+            transaction.account.balance -= new_amount
+            transaction.to_account.balance += new_amount
+            transaction.account.save()
+            transaction.to_account.save()
+        return JsonResponse({'success': True, 'message': 'Transaction updated successfully.'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})

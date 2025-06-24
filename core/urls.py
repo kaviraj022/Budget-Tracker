@@ -16,4 +16,6 @@ urlpatterns = [
     path('ajax/add-transaction/', views.add_transaction_ajax, name='add_transaction_ajax'),
     path('ajax/delete-transaction/<int:transaction_id>/', views.delete_transaction_ajax, name='delete_transaction_ajax'),
     path('ajax/rename-account/<int:account_id>/', views.rename_account_ajax, name='rename_account_ajax'),
+    path('ajax/get-transaction/<int:transaction_id>/', views.get_transaction_ajax, name='get_transaction_ajax'),
+    path('ajax/edit-transaction/<int:transaction_id>/', views.edit_transaction_ajax, name='edit_transaction_ajax'),
 ] 
