@@ -84,17 +84,8 @@ def dashboard_view(request):
 
 @user_login_required
 def add_account_view(request):
-    user_id = request.session.get('user_id')
-    user = get_object_or_404(User, id=user_id)
-    if request.method == 'POST':
-        account_name = request.POST.get('account_name')
-        if account_name:
-            Account.objects.create(user=user, account_name=account_name)
-            messages.success(request, 'Account added successfully!')
-            return redirect('dashboard')
-        else:
-            messages.error(request, 'Account name is required.')
-    return render(request, 'core/add_account.html')
+    # This function is removed as per the instructions
+    pass
 
 @user_login_required
 def delete_account_view(request, account_id):
