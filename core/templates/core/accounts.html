@@ -22,7 +22,12 @@
     <tbody>
         {% for account in accounts %}
         <tr>
-            <td>{{ account.account_name }}</td>
+            <td>
+                <span class="account-name" id="accountName-{{ account.id }}">{{ account.account_name }}</span>
+                <button class="btn btn-link p-0 ms-2 rename-account-btn" data-account-id="{{ account.id }}" title="Rename Account" style="font-size:0.7rem; vertical-align:middle;">
+                    <i class="bi bi-pencil"></i>
+                </button>
+            </td>
             <td>
                 {{ account.balance|floatformat:2 }} {{ account.get_amount_type_display }}
             </td>
@@ -71,6 +76,34 @@
     </div>
   </div>
 </div>
+
+<!-- Rename Account Modal -->
+<div class="modal fade" id="renameAccountModal" tabindex="-1" aria-labelledby="renameAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="renameAccountModalLabel">Rename Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="renameAccountForm">
+        <div class="modal-body">
+            <input type="hidden" id="renameAccountId">
+            <div class="mb-3">
+                <label for="renameAccountName" class="form-label">New Account Name</label>
+                <input type="text" class="form-control" id="renameAccountName" required>
+            </div>
+            <div id="renameAccountError" class="text-danger mb-2" style="display:none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Rename</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script src="{% static 'core/add_account.js' %}"></script>
 <script src="{% static 'core/edit_balance.js' %}"></script>
+<script src="{% static 'core/accounts.js' %}"></script>
 {% endblock %}

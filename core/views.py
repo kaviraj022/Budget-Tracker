@@ -371,3 +371,24 @@ def delete_transaction_ajax(request, transaction_id):
         return JsonResponse({'success': True, 'message': 'Transaction deleted successfully!'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
+
+@require_POST
+@csrf_exempt
+def rename_account_ajax(request, account_id):
+    try:
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'Not authenticated.'})
+        user = get_object_or_404(User, id=user_id)
+        account = get_object_or_404(Account, id=account_id, user=user)
+        data = json.loads(request.body)
+        new_name = data.get('account_name', '').strip()
+        if not new_name:
+            return JsonResponse({'success': False, 'message': 'Account name is required.'})
+        if Account.objects.filter(user=user, account_name=new_name).exclude(id=account_id).exists():
+            return JsonResponse({'success': False, 'message': 'Account with this name already exists.'})
+        account.account_name = new_name
+        account.save()
+        return JsonResponse({'success': True, 'message': 'Account renamed successfully.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': 'Error: ' + str(e)})
