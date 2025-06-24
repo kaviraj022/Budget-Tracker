@@ -39,4 +39,13 @@ ENV/
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Environment variables
+.env
+
+# Django
+__pycache__/
+*.pyc
+staticfiles/
+.DS_Store 
