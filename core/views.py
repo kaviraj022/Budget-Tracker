@@ -99,17 +99,41 @@ def add_account_view(request):
 @user_login_required
 def delete_account_view(request, account_id):
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     account = get_object_or_404(Account, id=account_id, user=user)
     if request.method == 'POST':
+        # Roll back all transactions where this account is involved
+        for transaction in account.transactions.all():
+            amount = Decimal(str(transaction.amount))
+            if transaction.transaction_type == 'INCOME':
+                account.balance -= amount
+            elif transaction.transaction_type == 'EXPENSE':
+                account.balance += amount
+            elif transaction.transaction_type == 'TRANSFER' and transaction.to_account:
+                account.balance += amount
+                transaction.to_account.balance -= amount
+                transaction.to_account.save()
+            account.save()
+        # As to_account in transfers
+        for transaction in account.received_transactions.all():
+            amount = Decimal(str(transaction.amount))
+            if transaction.transaction_type == 'TRANSFER' and transaction.account:
+                transaction.account.balance += amount
+                account.balance -= amount
+                transaction.account.save()
+                account.save()
         account.delete()
-        messages.success(request, 'Account deleted successfully!')
-        return redirect('dashboard')
+        messages.success(request, 'Account and all related transactions deleted and balances reverted!')
+        return redirect('accounts')
     return render(request, 'core/delete_account.html', {'account': account})
 
 @user_login_required
 def add_transaction_view(request):
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('signin')
     user = get_object_or_404(User, id=user_id)
     accounts = Account.objects.filter(user=user)
     if request.method == 'POST':
@@ -120,6 +144,8 @@ def add_transaction_view(request):
         to_account_id = request.POST.get('to_account')
         account = get_object_or_404(Account, id=account_id, user=user)
         to_account = None
+        from decimal import Decimal
+        amount = Decimal(str(amount))
         if transaction_type == 'TRANSFER' and to_account_id:
             to_account = get_object_or_404(Account, id=to_account_id, user=user)
         transaction = Transaction.objects.create(
@@ -133,14 +159,14 @@ def add_transaction_view(request):
         )
         # Update balances
         if transaction_type == 'INCOME':
-            account.balance += float(amount)
+            account.balance += amount
             account.save()
         elif transaction_type == 'EXPENSE':
-            account.balance -= float(amount)
+            account.balance -= amount
             account.save()
         elif transaction_type == 'TRANSFER' and to_account:
-            account.balance -= float(amount)
-            to_account.balance += float(amount)
+            account.balance -= amount
+            to_account.balance += amount
             account.save()
             to_account.save()
         messages.success(request, 'Transaction added successfully!')
