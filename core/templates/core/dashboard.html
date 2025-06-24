@@ -21,10 +21,16 @@
     </thead>
     <tbody>
         {% for transaction in transactions %}
-        <tr>
-            <td>{{ transaction.date }}</td>
+        <tr class="transaction-row" data-id="{{ transaction.id }}">
+            <td>{{ transaction.transaction_date }}</td>
             <td>{{ transaction.transaction_type }}</td>
-            <td>{{ transaction.account.account_name }}</td>
+            <td>
+                {% if transaction.transaction_type == 'TRANSFER' %}
+                    From: {{ transaction.account.account_name }}<br>To: {{ transaction.to_account.account_name }}
+                {% else %}
+                    {{ transaction.account.account_name }}
+                {% endif %}
+            </td>
             <td>{{ transaction.description }}</td>
             <td>${{ transaction.amount|floatformat:2 }}</td>
             <td>
