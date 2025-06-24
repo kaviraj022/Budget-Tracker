@@ -7,9 +7,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Your Accounts</h2>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">
-        Add Account
-    </button>
 </div>
 <table class="table table-bordered">
     <thead>
@@ -24,7 +21,7 @@
         <tr>
             <td>
                 <span class="account-name" id="accountName-{{ account.id }}">{{ account.account_name }}</span>
-                <button class="btn btn-link text-primary p-0 ms-2 rename-account-btn" data-account-id="{{ account.id }}" title="Rename Account" style="font-size:1rem; vertical-align:middle; padding:0 0.4rem;"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-link text-primary p-0 ms-2 rename-account-btn" data-account-id="{{ account.id }}" title="Rename Account" style="font-size:0.9rem; vertical-align:middle; padding:0 0.4rem;"><i class="bi bi-pencil"></i></button>
             </td>
             <td>
                 {{ account.balance|floatformat:2 }} {{ account.get_amount_type_display }}
@@ -41,6 +38,11 @@
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Floating Add Account Button -->
+<button id="fabAddAccount" class="btn btn-primary rounded-circle shadow-lg position-fixed" style="bottom: 2rem; right: 2rem; width: 60px; height: 60px; z-index: 1050; font-size: 2rem; display: flex; align-items: center; justify-content: center;">
+    <i class="bi bi-plus"></i>
+</button>
 
 <!-- Add Account Modal -->
 <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
@@ -104,4 +106,13 @@
 <script src="{% static 'core/add_account.js' %}"></script>
 <script src="{% static 'core/edit_balance.js' %}"></script>
 <script src="{% static 'core/accounts.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fab = document.getElementById('fabAddAccount');
+    const addAccountModal = new bootstrap.Modal(document.getElementById('addAccountModal'));
+    fab.addEventListener('click', function() {
+        addAccountModal.show();
+    });
+});
+</script>
 {% endblock %}
