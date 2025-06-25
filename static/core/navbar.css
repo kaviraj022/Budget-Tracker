@@ -54,6 +54,12 @@ body.light-theme .dropdown-menu .dropdown-item:focus {
     background-color: #e9ecef;
     color: #0d6efd !important;
 }
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: #343a40;
+}
+
 body.light-theme .modal-content {
     background-color: #fff;
     color: #212529;
